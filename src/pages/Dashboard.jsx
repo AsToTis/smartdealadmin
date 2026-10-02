@@ -135,7 +135,7 @@ const Dashboard = () => {
               </ResponsiveContainer>
             ) : (
               <div className="h-full flex items-center justify-center bg-slate-50 rounded-lg">
-                <p className="text-slate-400">กำลังโหลดกราฟ...</p>
+                <p className="text-slate-400">ไม่พบข้อมูล</p>
               </div>
             )}
           </div>
@@ -158,7 +158,7 @@ const Dashboard = () => {
               </ResponsiveContainer>
             ) : (
               <div className="h-full flex items-center justify-center bg-slate-50 rounded-lg">
-                <p className="text-slate-400">กำลังโหลดกราฟ...</p>
+                <p className="text-slate-400">ไม่พบข้อมูล</p>
               </div>
             )}
           </div>

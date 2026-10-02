@@ -5,7 +5,8 @@ import { X, User, Bike, FileText } from 'lucide-react';
 const getImageUrl = (path) => {
   if (!path) return null;
   if (path.startsWith('http')) return path;
-  return `http://localhost:5000${path.startsWith('/') ? '' : '/'}${path}`;
+  const normalizedPath = path.replace(/\\/g, '/');
+  return `http://localhost:5000${normalizedPath.startsWith('/') ? '' : '/'}${normalizedPath}`;
 };
 
 const ImageDisplay = ({ path, alt, defaultIcon, emptyText }) => {
@@ -212,16 +213,16 @@ const RiderApprovals = () => {
                   </h3>
                   <div>
                     <span className="text-slate-500 text-sm">รายละเอียดรถ (ยี่ห้อ/รุ่น):</span> 
-                    <p className="font-medium text-slate-900">{selectedRider.vehicle_details || selectedRider.vehicleDetails || selectedRider.vehicle_model || '-'}</p>
+                    <p className="font-medium text-slate-900">{selectedRider.vehicle_type || selectedRider.vehicle_details || selectedRider.vehicleDetails || selectedRider.vehicle_model || '-'}</p>
                   </div>
                   <div>
                     <span className="text-slate-500 text-sm">ทะเบียนรถ:</span> 
-                    <p className="font-medium text-slate-900 text-lg">{selectedRider.license_plate || selectedRider.licensePlate || '-'}</p>
+                    <p className="font-medium text-slate-900 text-lg">{selectedRider.vehicle_plate || selectedRider.license_plate || selectedRider.licensePlate || '-'}</p>
                   </div>
                   <div className="pt-2 border-t border-slate-100">
                     <span className="text-slate-500 text-sm block mb-2">รูปรถ / เอกสารรถ:</span>
                     <ImageDisplay 
-                      path={selectedRider.vehicle_image || selectedRider.vehicleImage}
+                      path={selectedRider.vehicle_doc_image || selectedRider.vehicle_image || selectedRider.vehicleImage}
                       alt="Vehicle"
                       defaultIcon="two_wheeler"
                       emptyText="ไม่ได้อัปโหลดรูปรถ"
@@ -236,12 +237,12 @@ const RiderApprovals = () => {
                   </h3>
                   <div>
                     <span className="text-slate-500 text-sm">เลขที่ใบขับขี่:</span> 
-                    <p className="font-medium text-slate-900">{selectedRider.driver_license_number || selectedRider.driverLicenseNumber || '-'}</p>
+                    <p className="font-medium text-slate-900">{selectedRider.license_number || selectedRider.driver_license_number || selectedRider.driverLicenseNumber || '-'}</p>
                   </div>
                   <div className="pt-2 border-t border-slate-100 mt-auto">
                     <span className="text-slate-500 text-sm block mb-2">รูปถ่ายใบขับขี่:</span>
                     <ImageDisplay 
-                      path={selectedRider.driver_license_image || selectedRider.driverLicenseImage || selectedRider.document_image}
+                      path={selectedRider.license_image || selectedRider.driver_license_image || selectedRider.driverLicenseImage || selectedRider.document_image}
                       alt="Driver License"
                       defaultIcon="id_card"
                       emptyText="ไม่ได้อัปโหลดเอกสาร"

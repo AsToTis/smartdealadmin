@@ -168,7 +168,7 @@ const Users = () => {
               <div className="flex items-center space-x-4 min-w-0">
                 <div className="relative flex-shrink-0">
                   <img 
-                    src={user.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name || 'U')}&background=random`} 
+                    src={(user.avatar_url && !user.avatar_url.startsWith('file://')) ? (user.avatar_url.startsWith('/uploads') ? `http://localhost:5000${user.avatar_url}` : user.avatar_url) : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name || 'U')}&background=random`} 
                     alt={user.full_name}
                     className="w-16 h-16 rounded-full object-cover border-2 border-slate-100 shadow-sm"
                   />
@@ -255,7 +255,7 @@ const Users = () => {
                 <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex items-center space-x-6">
                   <div className="relative">
                     <img 
-                      src={selectedUser.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedUser.full_name || 'U')}&background=random`} 
+                      src={(selectedUser.avatar_url && !selectedUser.avatar_url.startsWith('file://')) ? (selectedUser.avatar_url.startsWith('/uploads') ? `http://localhost:5000${selectedUser.avatar_url}` : selectedUser.avatar_url) : `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedUser.full_name || 'U')}&background=random`} 
                       alt={selectedUser.full_name}
                       className="w-24 h-24 rounded-full object-cover border-4 border-slate-50 shadow-sm"
                     />

@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { X, Bike } from 'lucide-react';
 
+const getImageUrl = (path) => {
+  if (!path) return null;
+  if (path.startsWith('http')) return path;
+  const normalizedPath = path.replace(/\\/g, '/');
+  return `http://localhost:5000${normalizedPath.startsWith('/') ? '' : '/'}${normalizedPath}`;
+};
+
 const Riders = () => {
   const [riders, setRiders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -172,8 +179,8 @@ const Riders = () => {
                       <h3 className="font-bold text-slate-800 text-md mb-3 border-b border-slate-100 pb-2">รูปยานพาหนะ / ใบขับขี่</h3>
                       <div className="space-y-4 mt-4">
                         {selectedRiderDetails.profile.vehicle_image || selectedRiderDetails.profile.vehicleImage ? (
-                          <a href={selectedRiderDetails.profile.vehicle_image?.startsWith('http') ? selectedRiderDetails.profile.vehicle_image : `http://localhost:5000${selectedRiderDetails.profile.vehicle_image}`} target="_blank" rel="noopener noreferrer" className="block overflow-hidden rounded-lg border border-slate-200 hover:opacity-90">
-                            <img src={selectedRiderDetails.profile.vehicle_image?.startsWith('http') ? selectedRiderDetails.profile.vehicle_image : `http://localhost:5000${selectedRiderDetails.profile.vehicle_image}`} alt="Vehicle" className="w-full h-32 object-contain bg-slate-50" />
+                          <a href={getImageUrl(selectedRiderDetails.profile.vehicle_image)} target="_blank" rel="noopener noreferrer" className="block overflow-hidden rounded-lg border border-slate-200 hover:opacity-90">
+                            <img src={getImageUrl(selectedRiderDetails.profile.vehicle_image)} alt="Vehicle" className="w-full h-32 object-contain bg-slate-50" />
                           </a>
                         ) : (
                           <div className="w-full h-32 bg-slate-50 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 text-sm">
@@ -181,8 +188,8 @@ const Riders = () => {
                           </div>
                         )}
                         {selectedRiderDetails.profile.driver_license_image || selectedRiderDetails.profile.driverLicenseImage || selectedRiderDetails.profile.document_image ? (
-                          <a href={selectedRiderDetails.profile.driver_license_image?.startsWith('http') ? selectedRiderDetails.profile.driver_license_image : `http://localhost:5000${selectedRiderDetails.profile.driver_license_image || selectedRiderDetails.profile.document_image}`} target="_blank" rel="noopener noreferrer" className="block overflow-hidden rounded-lg border border-slate-200 hover:opacity-90">
-                            <img src={selectedRiderDetails.profile.driver_license_image?.startsWith('http') ? selectedRiderDetails.profile.driver_license_image : `http://localhost:5000${selectedRiderDetails.profile.driver_license_image || selectedRiderDetails.profile.document_image}`} alt="License" className="w-full h-32 object-contain bg-slate-50" />
+                          <a href={getImageUrl(selectedRiderDetails.profile.driver_license_image || selectedRiderDetails.profile.document_image)} target="_blank" rel="noopener noreferrer" className="block overflow-hidden rounded-lg border border-slate-200 hover:opacity-90">
+                            <img src={getImageUrl(selectedRiderDetails.profile.driver_license_image || selectedRiderDetails.profile.document_image)} alt="License" className="w-full h-32 object-contain bg-slate-50" />
                           </a>
                         ) : (
                           <div className="w-full h-32 bg-slate-50 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 text-sm">

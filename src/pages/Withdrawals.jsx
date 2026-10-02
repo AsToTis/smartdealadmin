@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Check, Clock, Banknote, Image as ImageIcon, Eye, X, AlertCircle, Search } from 'lucide-react';
 
+const getImageUrl = (path) => {
+  if (!path || path === 'null') return null;
+  if (path.startsWith('http')) return path;
+  const normalizedPath = path.replace(/\\/g, '/');
+  return `http://localhost:5000${normalizedPath.startsWith('/') ? '' : '/'}${normalizedPath}`;
+};
+
 const Withdrawals = () => {
   const [withdrawals, setWithdrawals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -101,13 +108,13 @@ const Withdrawals = () => {
                         <div 
                           className="w-12 h-12 bg-slate-100 rounded border border-slate-200 flex-shrink-0 overflow-hidden flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-emerald-500 transition-all"
                           onClick={() => {
-                            const url = item.bookbank_image ? `http://localhost:5000${item.bookbank_image}` : 'https://placehold.co/800x800/f1f5f9/94a3b8?text=No+Image';
+                            const url = getImageUrl(item.bookbank_image) || 'https://placehold.co/800x800/f1f5f9/94a3b8?text=No+Image';
                             window.open(url, '_blank');
                           }}
                           title="คลิกเพื่อดูรูปขนาดเต็ม"
                         >
                           <img 
-                            src={item.bookbank_image ? `http://localhost:5000${item.bookbank_image}` : 'https://placehold.co/150x150/f1f5f9/94a3b8?text=No+Image'} 
+                            src={getImageUrl(item.bookbank_image) || 'https://placehold.co/150x150/f1f5f9/94a3b8?text=No+Image'} 
                             alt="Bookbank" 
                             className="w-full h-full object-cover" 
                             onError={(e) => { 
@@ -217,12 +224,12 @@ const Withdrawals = () => {
                 <div 
                   className="w-full h-64 bg-slate-100 rounded-xl border-2 border-dashed border-slate-300 flex overflow-hidden cursor-pointer hover:border-emerald-500 transition-colors relative group"
                   onClick={() => {
-                    const url = selectedWithdrawal.bookbank_image && selectedWithdrawal.bookbank_image !== 'null' ? `http://localhost:5000${selectedWithdrawal.bookbank_image}` : 'https://placehold.co/800x800/f1f5f9/94a3b8?text=No+Image';
+                    const url = getImageUrl(selectedWithdrawal.bookbank_image) || 'https://placehold.co/800x800/f1f5f9/94a3b8?text=No+Image';
                     window.open(url, '_blank');
                   }}
                 >
                    <img 
-                      src={selectedWithdrawal.bookbank_image && selectedWithdrawal.bookbank_image !== 'null' ? `http://localhost:5000${selectedWithdrawal.bookbank_image}` : 'https://placehold.co/800x800/f1f5f9/94a3b8?text=No+Image'} 
+                      src={getImageUrl(selectedWithdrawal.bookbank_image) || 'https://placehold.co/800x800/f1f5f9/94a3b8?text=No+Image'} 
                       alt="Bookbank" 
                       className="w-full h-full object-contain" 
                       onError={(e) => { 

@@ -3,6 +3,13 @@ import axios from 'axios';
 import { Eye, Star, X, ShoppingBag, DollarSign, Package, AlertTriangle } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
+const getImageUrl = (path) => {
+  if (!path) return null;
+  if (path.startsWith('http')) return path;
+  const normalizedPath = path.replace(/\\/g, '/');
+  return `http://localhost:5000${normalizedPath.startsWith('/') ? '' : '/'}${normalizedPath}`;
+};
+
 const Shops = () => {
   const [shops, setShops] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -159,7 +166,7 @@ const Shops = () => {
                           <div className="w-24 h-24 bg-slate-100 rounded-xl flex items-center justify-center border border-slate-200 overflow-hidden mb-4">
                             {shopInsights.shop.image_url ? (
                               <img 
-                                src={shopInsights.shop.image_url.startsWith('http') ? shopInsights.shop.image_url : `http://localhost:5000${shopInsights.shop.image_url}`} 
+                                src={getImageUrl(shopInsights.shop.image_url)} 
                                 alt="Shop logo" 
                                 className="w-full h-full object-cover" 
                                 onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/400x400/png?text=No+Image'; }}
@@ -297,7 +304,7 @@ const Shops = () => {
                                         <div className="w-10 h-10 bg-slate-100 rounded-md overflow-hidden border border-slate-200 shrink-0">
                                           {product.image_url ? (
                                             <img 
-                                              src={product.image_url.startsWith('http') ? product.image_url : `http://localhost:5000${product.image_url}`} 
+                                              src={getImageUrl(product.image_url)} 
                                               alt={product.name} 
                                               className="w-full h-full object-cover" 
                                               onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/400x400/png?text=No+Image'; }}
@@ -361,7 +368,7 @@ const Shops = () => {
                 <div className="w-24 h-24 bg-slate-100 rounded-xl overflow-hidden border border-slate-200 shrink-0">
                   {selectedProduct.image_url ? (
                     <img 
-                      src={selectedProduct.image_url.startsWith('http') ? selectedProduct.image_url : `http://localhost:5000${selectedProduct.image_url}`} 
+                      src={getImageUrl(selectedProduct.image_url)} 
                       alt={selectedProduct.name} 
                       className="w-full h-full object-cover" 
                       onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/400x400/png?text=No+Image'; }}
