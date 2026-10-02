@@ -11,7 +11,7 @@ const Settings = () => {
 
   const fetchSettings = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin/settings');
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/settings`);
       if (response.data.success) {
         setSettings(response.data.settings);
       }
@@ -35,7 +35,7 @@ const Settings = () => {
     setSaving(true);
     try {
       const payload = settings.map(s => ({ setting_key: s.setting_key, setting_value: s.setting_value }));
-      const response = await axios.put('http://localhost:5000/api/admin/settings', { settings: payload });
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/settings`, { settings: payload });
       if (response.data.success) {
         toast.success('บันทึกการตั้งค่าระบบเรียบร้อยแล้ว');
       }

@@ -6,7 +6,7 @@ const getImageUrl = (path) => {
   if (!path || path === 'null') return null;
   if (path.startsWith('http')) return path;
   const normalizedPath = path.replace(/\\/g, '/');
-  return `http://localhost:5000${normalizedPath.startsWith('/') ? '' : '/'}${normalizedPath}`;
+  return `${import.meta.env.VITE_API_URL}${normalizedPath.startsWith('/') ? '' : '/'}${normalizedPath}`;
 };
 
 const Withdrawals = () => {
@@ -17,7 +17,7 @@ const Withdrawals = () => {
 
   const fetchWithdrawals = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin/withdrawals');
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/withdrawals`);
       if (Array.isArray(response.data)) {
         setWithdrawals(response.data);
       } else if (response.data && Array.isArray(response.data.data)) {
@@ -41,7 +41,7 @@ const Withdrawals = () => {
   const handleApprove = async (id) => {
     if (window.confirm('คุณต้องการยืนยันว่าทำการโอนเงินสำเร็จแล้วใช่หรือไม่?')) {
       try {
-        await axios.post(`http://localhost:5000/api/admin/withdrawals/${id}/approve`);
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/withdrawals/${id}/approve`);
         fetchWithdrawals();
       } catch (error) {
         console.error('Error approving withdrawal:', error);
@@ -58,7 +58,7 @@ const Withdrawals = () => {
       return;
     }
     try {
-      await axios.post(`http://localhost:5000/api/admin/withdrawals/${id}/reject`, { reason });
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/withdrawals/${id}/reject`, { reason });
       fetchWithdrawals();
       setIsModalOpen(false);
     } catch (error) {

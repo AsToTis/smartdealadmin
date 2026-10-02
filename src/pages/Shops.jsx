@@ -7,7 +7,7 @@ const getImageUrl = (path) => {
   if (!path) return null;
   if (path.startsWith('http')) return path;
   const normalizedPath = path.replace(/\\/g, '/');
-  return `http://localhost:5000${normalizedPath.startsWith('/') ? '' : '/'}${normalizedPath}`;
+  return `${import.meta.env.VITE_API_URL}${normalizedPath.startsWith('/') ? '' : '/'}${normalizedPath}`;
 };
 
 const Shops = () => {
@@ -21,7 +21,7 @@ const Shops = () => {
 
   const fetchShops = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin/shops');
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/shops`);
       if (Array.isArray(response.data)) {
         setShops(response.data);
       } else if (response.data && Array.isArray(response.data.shops)) {
@@ -48,7 +48,7 @@ const Shops = () => {
     setLoadingInsights(true);
     setShopInsights(null);
     try {
-      const response = await axios.get(`http://localhost:5000/api/admin/shops/${shopId}/insights`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/shops/${shopId}/insights`);
       setShopInsights(response.data);
     } catch (error) {
       console.error('Error fetching shop insights:', error);
@@ -61,7 +61,7 @@ const Shops = () => {
     if (!shopInsights) return;
     if (window.confirm(`คุณต้องการระงับการใช้งานร้านค้า ${shopInsights.shop.shop_name} ใช่หรือไม่?`)) {
       try {
-        await axios.put(`http://localhost:5000/api/admin/shops/${selectedShopId}/suspend`);
+        await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/shops/${selectedShopId}/suspend`);
         alert('ระงับการใช้งานร้านค้าเรียบร้อยแล้ว');
         setIsPanelOpen(false);
         fetchShops();

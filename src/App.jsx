@@ -14,7 +14,7 @@ import RiderApprovals from './pages/RiderApprovals';
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.DEV ? '/' : '/244/'}>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />

@@ -43,7 +43,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/admin/dashboard?period=${salesPeriod}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/dashboard?period=${salesPeriod}`);
         setStats(response.data);
       } catch (error) {
         console.error("Error fetching stats", error);

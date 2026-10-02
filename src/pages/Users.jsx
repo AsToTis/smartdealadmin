@@ -18,7 +18,7 @@ const Users = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/admin/users');
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/users`);
         setUsers(response.data);
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -54,7 +54,7 @@ const Users = () => {
     setIsSlideOverOpen(true);
     setIsDetailsLoading(true);
     try {
-      const response = await axios.get(`http://localhost:5000/api/admin/users/${user.user_id}/details`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/users/${user.user_id}/details`);
       setUserDetails(response.data);
     } catch (error) {
       console.error('Error fetching user details:', error);
@@ -67,7 +67,7 @@ const Users = () => {
   const toggleUserStatus = async (userId, currentStatus) => {
     const newStatus = currentStatus === 'active' ? 'suspended' : 'active';
     try {
-      const response = await axios.put(`http://localhost:5000/api/admin/users/${userId}/status`, {
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}/status`, {
         status: newStatus
       });
       if (response.data.success) {
@@ -168,7 +168,7 @@ const Users = () => {
               <div className="flex items-center space-x-4 min-w-0">
                 <div className="relative flex-shrink-0">
                   <img 
-                    src={(user.avatar_url && !user.avatar_url.startsWith('file://')) ? (user.avatar_url.startsWith('/uploads') ? `http://localhost:5000${user.avatar_url}` : user.avatar_url) : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name || 'U')}&background=random`} 
+                    src={(user.avatar_url && !user.avatar_url.startsWith('file://')) ? (user.avatar_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL}${user.avatar_url}` : user.avatar_url) : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name || 'U')}&background=random`} 
                     alt={user.full_name}
                     className="w-16 h-16 rounded-full object-cover border-2 border-slate-100 shadow-sm"
                   />
@@ -255,7 +255,7 @@ const Users = () => {
                 <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex items-center space-x-6">
                   <div className="relative">
                     <img 
-                      src={(selectedUser.avatar_url && !selectedUser.avatar_url.startsWith('file://')) ? (selectedUser.avatar_url.startsWith('/uploads') ? `http://localhost:5000${selectedUser.avatar_url}` : selectedUser.avatar_url) : `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedUser.full_name || 'U')}&background=random`} 
+                      src={(selectedUser.avatar_url && !selectedUser.avatar_url.startsWith('file://')) ? (selectedUser.avatar_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL}${selectedUser.avatar_url}` : selectedUser.avatar_url) : `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedUser.full_name || 'U')}&background=random`} 
                       alt={selectedUser.full_name}
                       className="w-24 h-24 rounded-full object-cover border-4 border-slate-50 shadow-sm"
                     />

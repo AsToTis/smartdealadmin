@@ -17,7 +17,7 @@ const Tickets = () => {
 
   const fetchTickets = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin/tickets');
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/tickets`);
       setTickets(response.data);
     } catch (error) {
       console.error('Error fetching tickets:', error);
@@ -36,7 +36,7 @@ const Tickets = () => {
     setIsSlideOverOpen(true);
     setIsDetailsLoading(true);
     try {
-      const response = await axios.get(`http://localhost:5000/api/admin/tickets/${ticket.issue_id}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/tickets/${ticket.issue_id}`);
       setTicketDetails(response.data);
     } catch (error) {
       console.error('Error fetching ticket details:', error);
@@ -50,7 +50,7 @@ const Tickets = () => {
     if (!selectedTicket) return;
     setIsUpdating(true);
     try {
-      const response = await axios.put(`http://localhost:5000/api/admin/tickets/${selectedTicket.issue_id}/status`, {
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/tickets/${selectedTicket.issue_id}/status`, {
         status: newStatus
       });
       if (response.data.success) {

@@ -18,7 +18,7 @@ const Banners = () => {
 
   const fetchBanners = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin/banners');
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/banners`);
       setBanners(response.data);
     } catch (error) {
       console.error('Error fetching banners:', error);
@@ -46,10 +46,10 @@ const Banners = () => {
     
     try {
       if (isEditing) {
-        await axios.put(`http://localhost:5000/api/admin/banners/${editingId}`, formData);
+        await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/banners/${editingId}`, formData);
         toast.success('แก้ไขแบนเนอร์เรียบร้อยแล้ว');
       } else {
-        await axios.post('http://localhost:5000/api/admin/banners', formData);
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/banners`, formData);
         toast.success('เพิ่มแบนเนอร์ใหม่เรียบร้อยแล้ว');
       }
       setIsModalOpen(false);
@@ -73,7 +73,7 @@ const Banners = () => {
   const handleToggleStatus = async (id, currentStatus) => {
     try {
       // Toggle logic using PUT /api/admin/banners/:id/status
-      await axios.put(`http://localhost:5000/api/admin/banners/${id}/status`, { is_active: !currentStatus });
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/banners/${id}/status`, { is_active: !currentStatus });
       toast.success('อัปเดตสถานะแบนเนอร์สำเร็จ');
       setBanners(banners.map(b => b.id === id ? { ...b, is_active: !currentStatus } : b));
     } catch (error) {
@@ -86,7 +86,7 @@ const Banners = () => {
     if (!window.confirm('คุณต้องการลบแบนเนอร์นี้ใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้')) return;
     
     try {
-      await axios.delete(`http://localhost:5000/api/admin/banners/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/banners/${id}`);
       toast.success('ลบแบนเนอร์สำเร็จ');
       fetchBanners();
     } catch (error) {

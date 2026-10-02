@@ -10,7 +10,7 @@ const ShopApprovals = () => {
 
   const fetchShops = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin/shops/pending');
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/shops/pending`);
       console.log('API Response (ShopApprovals):', response.data);
       if (Array.isArray(response.data)) {
         setShops(response.data);
@@ -35,7 +35,7 @@ const ShopApprovals = () => {
   const handleApprove = async () => {
     if (!selectedShop) return;
     try {
-      await axios.put(`http://localhost:5000/api/admin/shops/${selectedShop.shop_id}/approve`);
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/shops/${selectedShop.shop_id}/approve`);
       fetchShops();
       setIsModalOpen(false);
     } catch (error) {
@@ -52,7 +52,7 @@ const ShopApprovals = () => {
         return;
       }
       try {
-        await axios.put(`http://localhost:5000/api/admin/shops/${selectedShop.shop_id}/reject`, { reason });
+        await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/shops/${selectedShop.shop_id}/reject`, { reason });
         fetchShops();
         setIsModalOpen(false);
       } catch (error) {
@@ -179,8 +179,8 @@ const ShopApprovals = () => {
                     <div>
                       <span className="text-slate-500 text-sm block mb-2">รูปถ่ายหน้าสมุดบัญชี:</span>
                       {selectedShop.bookbank_image ? (
-                        <a href={selectedShop.bookbank_image.startsWith('http') ? selectedShop.bookbank_image : `http://localhost:5000${selectedShop.bookbank_image.startsWith('/') ? '' : '/'}${selectedShop.bookbank_image.replace(/\\/g, '/')}`} target="_blank" rel="noopener noreferrer" className="block rounded-lg overflow-hidden border border-slate-200 shadow-sm bg-slate-100 hover:opacity-90 transition-opacity cursor-pointer">
-                          <img src={selectedShop.bookbank_image.startsWith('http') ? selectedShop.bookbank_image : `http://localhost:5000${selectedShop.bookbank_image.startsWith('/') ? '' : '/'}${selectedShop.bookbank_image.replace(/\\/g, '/')}`} alt="Bookbank" className="w-full h-auto max-h-48 object-contain" />
+                        <a href={selectedShop.bookbank_image.startsWith('http') ? selectedShop.bookbank_image : `${import.meta.env.VITE_API_URL}${selectedShop.bookbank_image.startsWith('/') ? '' : '/'}${selectedShop.bookbank_image.replace(/\\/g, '/')}`} target="_blank" rel="noopener noreferrer" className="block rounded-lg overflow-hidden border border-slate-200 shadow-sm bg-slate-100 hover:opacity-90 transition-opacity cursor-pointer">
+                          <img src={selectedShop.bookbank_image.startsWith('http') ? selectedShop.bookbank_image : `${import.meta.env.VITE_API_URL}${selectedShop.bookbank_image.startsWith('/') ? '' : '/'}${selectedShop.bookbank_image.replace(/\\/g, '/')}`} alt="Bookbank" className="w-full h-auto max-h-48 object-contain" />
                         </a>
                       ) : (
                         <div className="w-full h-32 bg-slate-100 rounded-lg border border-slate-200 flex flex-col items-center justify-center text-slate-400">
@@ -205,8 +205,8 @@ const ShopApprovals = () => {
                     <div className="mt-6">
                       <span className="text-slate-500 text-sm block mb-2">รูปถ่ายบัตรประชาชน:</span>
                       {selectedShop.id_card_image ? (
-                        <a href={selectedShop.id_card_image.startsWith('http') ? selectedShop.id_card_image : `http://localhost:5000${selectedShop.id_card_image.startsWith('/') ? '' : '/'}${selectedShop.id_card_image.replace(/\\/g, '/')}`} target="_blank" rel="noopener noreferrer" className="block rounded-lg overflow-hidden border border-slate-200 shadow-sm bg-slate-100 hover:opacity-90 transition-opacity cursor-pointer">
-                          <img src={selectedShop.id_card_image.startsWith('http') ? selectedShop.id_card_image : `http://localhost:5000${selectedShop.id_card_image.startsWith('/') ? '' : '/'}${selectedShop.id_card_image.replace(/\\/g, '/')}`} alt="ID Card" className="w-full h-auto object-contain max-h-72" />
+                        <a href={selectedShop.id_card_image.startsWith('http') ? selectedShop.id_card_image : `${import.meta.env.VITE_API_URL}${selectedShop.id_card_image.startsWith('/') ? '' : '/'}${selectedShop.id_card_image.replace(/\\/g, '/')}`} target="_blank" rel="noopener noreferrer" className="block rounded-lg overflow-hidden border border-slate-200 shadow-sm bg-slate-100 hover:opacity-90 transition-opacity cursor-pointer">
+                          <img src={selectedShop.id_card_image.startsWith('http') ? selectedShop.id_card_image : `${import.meta.env.VITE_API_URL}${selectedShop.id_card_image.startsWith('/') ? '' : '/'}${selectedShop.id_card_image.replace(/\\/g, '/')}`} alt="ID Card" className="w-full h-auto object-contain max-h-72" />
                         </a>
                       ) : (
                         <div className="w-full h-48 bg-slate-100 rounded-lg border border-slate-200 flex flex-col items-center justify-center text-slate-400">

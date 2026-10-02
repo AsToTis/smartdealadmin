@@ -6,7 +6,7 @@ const getImageUrl = (path) => {
   if (!path) return null;
   if (path.startsWith('http')) return path;
   const normalizedPath = path.replace(/\\/g, '/');
-  return `http://localhost:5000${normalizedPath.startsWith('/') ? '' : '/'}${normalizedPath}`;
+  return `${import.meta.env.VITE_API_URL}${normalizedPath.startsWith('/') ? '' : '/'}${normalizedPath}`;
 };
 
 const Riders = () => {
@@ -20,7 +20,7 @@ const Riders = () => {
 
   const fetchRiders = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin/riders');
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/riders`);
       console.log('API Response (Riders):', response.data);
       if (Array.isArray(response.data)) {
         setRiders(response.data);
@@ -48,7 +48,7 @@ const Riders = () => {
     setDetailsLoading(true);
     setSelectedRiderDetails(null);
     try {
-      const response = await axios.get(`http://localhost:5000/api/admin/riders/${rider.id || rider.rider_id}/details`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/riders/${rider.id || rider.rider_id}/details`);
       if (response.data.success) {
         setSelectedRiderDetails(response.data.data);
       }
