@@ -1,7 +1,17 @@
 import React from 'react';
-import { Search, Bell, User } from 'lucide-react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { Search, Bell, User, LogOut } from 'lucide-react';
+import { getAdmin, clearAdmin } from '../lib/adminSession';
 
 const Topbar = () => {
+  const navigate = useNavigate();
+  const admin = getAdmin();
+  const handleLogout = async () => {
+    try { await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/logout`); } catch (e) { /* ignore */ }
+    clearAdmin();
+    navigate('/login', { replace: true });
+  };
   return (
     <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
       <div className="flex-1 flex items-center">
@@ -29,7 +39,10 @@ const Topbar = () => {
           <div className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center text-primary-700">
             <User className="h-4 w-4" />
           </div>
-          <span className="text-sm font-medium">Admin User</span>
+          <span className="text-sm font-medium">{admin?.full_name || 'Admin User'}</span>
+        </button>
+        <button onClick={handleLogout} title="ออกจากระบบ" className="p-2 text-slate-400 hover:text-red-600 transition-colors rounded-full hover:bg-slate-50">
+          <LogOut className="h-5 w-5" />
         </button>
       </div>
     </header>

@@ -1,9 +1,11 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Navigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
+import { getAdmin } from '../lib/adminSession';
 
 const Layout = () => {
+  if (!getAdmin()) return <Navigate to="/login" replace />;
   return (
     <div className="flex h-screen bg-slate-50 font-sans">
       <Sidebar />

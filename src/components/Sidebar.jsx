@@ -12,7 +12,8 @@ import {
   Megaphone,
   Bike,
   HelpCircle,
-  Banknote
+  Banknote,
+  History
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -31,6 +32,7 @@ const Sidebar = () => {
 
     { name: 'จัดการแบนเนอร์', path: '/banners', icon: Megaphone },
     { name: 'ตั้งค่าระบบ', path: '/settings', icon: Settings },
+    { name: 'ประวัติการใช้งานระบบ', path: '/activity-logs', icon: History },
   ];
 
   return (

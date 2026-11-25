@@ -14,11 +14,14 @@ import Settings from './pages/Settings';
 import Riders from './pages/Riders';
 import RiderApprovals from './pages/RiderApprovals';
 import Complaints from './pages/Complaints';
+import Login from './pages/Login';
+import ActivityLogs from './pages/ActivityLogs';
 
 function App() {
   return (
     <BrowserRouter basename={import.meta.env.DEV ? '/' : '/244/'}>
       <Routes>
+        <Route path="/login" element={<Login />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="orders" element={<Orders />} />
@@ -33,6 +36,7 @@ function App() {
           <Route path="complaints" element={<Complaints />} />
           <Route path="banners" element={<Banners />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="activity-logs" element={<ActivityLogs />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

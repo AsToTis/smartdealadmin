@@ -244,7 +244,24 @@ const Orders = () => {
                     <p className="text-slate-600">ส่วนลด (Discount): ฿{Number(orderDetails.discount || 0).toFixed(2)}</p>
                     <p className="text-sm font-bold text-slate-900 mt-2">ยอดชำระสุทธิ (Total): ฿{Number(orderDetails.total_amount).toFixed(2)}</p>
                   </div>
-                  
+
+                  {/* Timeline จากตาราง order_status_logs */}
+                  {Array.isArray(orderDetails.timeline) && orderDetails.timeline.length > 0 && (
+                    <div className="mt-6 border-t border-slate-200 pt-4 font-sans">
+                      <p className="text-xs font-semibold text-slate-700 mb-3">ไทม์ไลน์คำสั่งซื้อ</p>
+                      <ol className="space-y-3">
+                        {orderDetails.timeline.map((t) => (
+                          <li key={t.id} className="relative pl-4 border-l-2 border-primary-200">
+                            <p className="text-[10px] text-slate-400">
+                              {new Date(String(t.created_at).replace(' ', 'T')).toLocaleString('th-TH', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit' })} · {t.actor_name || 'ระบบ'}
+                            </p>
+                            <p className="text-xs text-slate-700">{t.description_th}</p>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  )}
+
                   {/* Footer */}
                   <div className="text-center mt-8 text-slate-300 text-[9px]">
                     <p>ขอบคุณที่ใช้บริการ Smart Deal</p>
