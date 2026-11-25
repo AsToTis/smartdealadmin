@@ -3,6 +3,20 @@ import axios from 'axios';
 import { Search } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 
+const getImageUrl = (path) => {
+  if (!path) return null;
+  let parsedPath = path;
+  try {
+    if (typeof path === 'string' && path.startsWith('[') && path.endsWith(']')) {
+      const arr = JSON.parse(path);
+      if (arr.length > 0) parsedPath = arr[0];
+    }
+  } catch(e) {}
+  if (parsedPath.startsWith('http') || parsedPath.startsWith('data:image')) return parsedPath;
+  const normalizedPath = parsedPath.replace(/\\/g, '/');
+  return `${import.meta.env.VITE_API_URL}${normalizedPath.startsWith('/') ? '' : '/'}${normalizedPath}`;
+};
+
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,6 +27,7 @@ const Users = () => {
   const [isSlideOverOpen, setIsSlideOverOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
+  const [userShopInsights, setUserShopInsights] = useState(null);
   const [isDetailsLoading, setIsDetailsLoading] = useState(false);
 
   useEffect(() => {
@@ -53,9 +68,28 @@ const Users = () => {
     setSelectedUser(user);
     setIsSlideOverOpen(true);
     setIsDetailsLoading(true);
+    setUserShopInsights(null);
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/users/${user.user_id}/details`);
       setUserDetails(response.data);
+
+      if (user.role === 'seller') {
+        try {
+          const shopsResponse = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/shops`);
+          let allShops = [];
+          if (Array.isArray(shopsResponse.data)) allShops = shopsResponse.data;
+          else if (shopsResponse.data?.shops) allShops = shopsResponse.data.shops;
+          else if (shopsResponse.data?.results) allShops = shopsResponse.data.results;
+          
+          const userShop = allShops.find(s => String(s.owner_id) === String(user.user_id));
+          if (userShop) {
+             const insightsRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/shops/${userShop.shop_id}/insights`);
+             setUserShopInsights(insightsRes.data);
+          } else {
+             console.log("No shop found for user:", user.user_id, allShops);
+          }
+        } catch(e) { console.error('Error fetching shop insights for user', e); }
+      }
     } catch (error) {
       console.error('Error fetching user details:', error);
       toast.error('ไม่สามารถดึงข้อมูลรายละเอียดผู้ใช้ได้');
@@ -234,12 +268,12 @@ const Users = () => {
           ></div>
           
           {/* Slide-over */}
-          <div className="fixed inset-y-0 right-0 max-w-2xl w-full flex">
+          <div className={`fixed inset-y-0 right-0 w-full flex transition-all duration-300 ${selectedUser.role === 'seller' && userShopInsights ? 'max-w-5xl' : 'max-w-2xl'}`}>
             <div className="w-full h-full bg-slate-50 shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
               
               {/* Top Action Bar */}
               <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-slate-200">
-                <h2 className="text-xl font-bold text-slate-800">ข้อมูลเชิงลึก (Customer 360)</h2>
+                <h2 className="text-xl font-bold text-slate-800">ข้อมูลเชิงลึก</h2>
                 <button 
                   onClick={() => setIsSlideOverOpen(false)}
                   className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-full transition-colors"
@@ -249,15 +283,18 @@ const Users = () => {
               </div>
 
               {/* Scrollable Content */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              <div className="flex-1 overflow-y-auto p-6">
+                <div className={selectedUser.role === 'seller' && userShopInsights ? 'grid grid-cols-2 gap-6' : 'space-y-6'}>
+                  <div className="space-y-6">
                 
                 {/* Part 1: Header */}
                 <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex items-center space-x-6">
                   <div className="relative">
                     <img 
-                      src={(selectedUser.avatar_url && !selectedUser.avatar_url.startsWith('file://')) ? (selectedUser.avatar_url.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL}${selectedUser.avatar_url}` : selectedUser.avatar_url) : `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedUser.full_name || 'U')}&background=random`} 
+                      src={getImageUrl(selectedUser.avatar_url) || `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedUser.full_name || 'U')}&background=random`} 
                       alt={selectedUser.full_name}
                       className="w-24 h-24 rounded-full object-cover border-4 border-slate-50 shadow-sm"
+                      onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedUser.full_name || 'U')}&background=random`; }}
                     />
                     <div className={`absolute bottom-1 right-1 w-5 h-5 rounded-full border-4 border-white ${selectedUser.status === 'active' ? 'bg-green-500' : 'bg-red-500'}`}></div>
                   </div>
@@ -405,6 +442,36 @@ const Users = () => {
                 ) : (
                   <div className="text-center py-12 text-slate-500">ไม่สามารถโหลดข้อมูลได้</div>
                 )}
+                </div> {/* End left column */}
+
+                {/* Right Column */}
+                {selectedUser.role === 'seller' && userShopInsights && (
+                  <div className="space-y-6">
+                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                      <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+                        <h4 className="font-bold text-slate-800 flex items-center">
+                          <span className="material-symbols-outlined mr-2 text-purple-500">storefront</span> 
+                          ข้อมูลเชิงลึกร้านค้า (Shop Insights)
+                        </h4>
+                      </div>
+                      <div className="p-5 grid grid-cols-2 gap-4">
+                        <div className="bg-purple-50 p-4 rounded-xl border border-purple-100 flex flex-col justify-center items-center text-center">
+                          <span className="text-purple-600 font-medium text-xs uppercase tracking-wider mb-1">ยอดขายร้านค้ารวม</span>
+                          <span className="text-2xl font-bold text-purple-900">฿{Number(userShopInsights.kpi?.total_revenue || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                        </div>
+                        <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 flex flex-col justify-center items-center text-center">
+                          <span className="text-blue-600 font-medium text-xs uppercase tracking-wider mb-1">สินค้าในร้านทั้งหมด</span>
+                          <span className="text-2xl font-bold text-blue-900">{userShopInsights.products?.length || 0} รายการ</span>
+                        </div>
+                        <div className="bg-amber-50 p-4 rounded-xl border border-amber-100 flex flex-col justify-center items-center col-span-2 text-center">
+                          <span className="text-amber-600 font-medium text-xs uppercase tracking-wider mb-1">ชื่อร้านค้า</span>
+                          <span className="text-lg font-bold text-amber-900">{userShopInsights.shop?.shop_name || '-'}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                </div> {/* End grid */}
               </div>
 
               {/* Action Footer */}

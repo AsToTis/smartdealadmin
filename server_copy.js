@@ -322,6 +322,21 @@ app.put('/api/users/:id/profile', async (req, res) => {
   }
 });
 
+// อัปโหลดรูปโปรไฟล์ (POST /api/users/:id/avatar)
+app.post('/api/users/:id/avatar', upload.single('avatar'), async (req, res) => {
+  const { id } = req.params;
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'ไม่มีไฟล์' });
+    }
+    const avatarUrl = '/uploads/' + req.file.filename;
+    await db.execute('UPDATE users SET avatar_url = ? WHERE user_id = ?', [avatarUrl, id]);
+    res.json({ success: true, avatar_url: avatarUrl });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // เปลี่ยนรหัสผ่าน (PUT /api/users/:id/change-password)
 app.put('/api/users/:id/change-password', async (req, res) => {
   const { id } = req.params;
@@ -2591,8 +2606,16 @@ app.get('/api/admin/shops/pending', async (req, res) => {
 
 app.put('/api/admin/shops/:id/approve', async (req, res) => {
   try {
-    const [result] = await db.execute(`UPDATE shops SET status = "approved" WHERE shop_id = ?`, [req.params.id]);
+    const shopId = req.params.id;
+    const [result] = await db.execute(`UPDATE shops SET status = "approved" WHERE shop_id = ?`, [shopId]);
     if (result.affectedRows === 0) return res.status(404).json({ error: 'ไม่พบร้านค้า' });
+    
+    // อัปเดต role เป็น seller
+    const [shop] = await db.execute(`SELECT owner_id FROM shops WHERE shop_id = ?`, [shopId]);
+    if (shop.length > 0) {
+      await db.execute(`UPDATE users SET role = "seller" WHERE user_id = ?`, [shop[0].owner_id]);
+    }
+
     res.json({ success: true, message: 'อนุมัติร้านค้าเรียบร้อยแล้ว' });
   } catch (error) {
     console.error('API /api/admin/shops/:id/approve Error:', error);
@@ -3279,7 +3302,7 @@ app.get('/api/admin/riders', async (req, res) => {
         r.real_name, 
         r.name,
         r.phone, 
-        r.license_plate, 
+        r.vehicle_plate as license_plate, 
         r.rider_status,
         r.status,
         r.rating AS average_rating,

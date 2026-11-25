@@ -4,8 +4,15 @@ import { Check, Clock, Banknote, Image as ImageIcon, Eye, X, AlertCircle, Search
 
 const getImageUrl = (path) => {
   if (!path || path === 'null') return null;
-  if (path.startsWith('http')) return path;
-  const normalizedPath = path.replace(/\\/g, '/');
+  let parsedPath = path;
+  try {
+    if (typeof path === 'string' && path.startsWith('[') && path.endsWith(']')) {
+      const arr = JSON.parse(path);
+      if (arr.length > 0) parsedPath = arr[0];
+    }
+  } catch(e) {}
+  if (parsedPath.startsWith('http') || parsedPath.startsWith('data:image')) return parsedPath;
+  const normalizedPath = parsedPath.replace(/\\/g, '/');
   return `${import.meta.env.VITE_API_URL}${normalizedPath.startsWith('/') ? '' : '/'}${normalizedPath}`;
 };
 

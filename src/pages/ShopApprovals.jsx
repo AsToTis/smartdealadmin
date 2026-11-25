@@ -2,6 +2,20 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Check, X } from 'lucide-react';
 
+const getImageUrl = (path) => {
+  if (!path) return null;
+  let parsedPath = path;
+  try {
+    if (typeof path === 'string' && path.startsWith('[') && path.endsWith(']')) {
+      const arr = JSON.parse(path);
+      if (arr.length > 0) parsedPath = arr[0];
+    }
+  } catch(e) {}
+  if (parsedPath.startsWith('http') || parsedPath.startsWith('data:image')) return parsedPath;
+  const normalizedPath = parsedPath.replace(/\\/g, '/');
+  return `${import.meta.env.VITE_API_URL}${normalizedPath.startsWith('/') ? '' : '/'}${normalizedPath}`;
+};
+
 const ShopApprovals = () => {
   const [shops, setShops] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -179,8 +193,8 @@ const ShopApprovals = () => {
                     <div>
                       <span className="text-slate-500 text-sm block mb-2">รูปถ่ายหน้าสมุดบัญชี:</span>
                       {selectedShop.bookbank_image ? (
-                        <a href={selectedShop.bookbank_image.startsWith('http') ? selectedShop.bookbank_image : `${import.meta.env.VITE_API_URL}${selectedShop.bookbank_image.startsWith('/') ? '' : '/'}${selectedShop.bookbank_image.replace(/\\/g, '/')}`} target="_blank" rel="noopener noreferrer" className="block rounded-lg overflow-hidden border border-slate-200 shadow-sm bg-slate-100 hover:opacity-90 transition-opacity cursor-pointer">
-                          <img src={selectedShop.bookbank_image.startsWith('http') ? selectedShop.bookbank_image : `${import.meta.env.VITE_API_URL}${selectedShop.bookbank_image.startsWith('/') ? '' : '/'}${selectedShop.bookbank_image.replace(/\\/g, '/')}`} alt="Bookbank" className="w-full h-auto max-h-48 object-contain" />
+                        <a href={getImageUrl(selectedShop.bookbank_image)} target="_blank" rel="noopener noreferrer" className="block rounded-lg overflow-hidden border border-slate-200 shadow-sm bg-slate-100 hover:opacity-90 transition-opacity cursor-pointer">
+                          <img src={getImageUrl(selectedShop.bookbank_image)} alt="Bookbank" className="w-full h-auto max-h-48 object-contain" />
                         </a>
                       ) : (
                         <div className="w-full h-32 bg-slate-100 rounded-lg border border-slate-200 flex flex-col items-center justify-center text-slate-400">
@@ -205,8 +219,8 @@ const ShopApprovals = () => {
                     <div className="mt-6">
                       <span className="text-slate-500 text-sm block mb-2">รูปถ่ายบัตรประชาชน:</span>
                       {selectedShop.id_card_image ? (
-                        <a href={selectedShop.id_card_image.startsWith('http') ? selectedShop.id_card_image : `${import.meta.env.VITE_API_URL}${selectedShop.id_card_image.startsWith('/') ? '' : '/'}${selectedShop.id_card_image.replace(/\\/g, '/')}`} target="_blank" rel="noopener noreferrer" className="block rounded-lg overflow-hidden border border-slate-200 shadow-sm bg-slate-100 hover:opacity-90 transition-opacity cursor-pointer">
-                          <img src={selectedShop.id_card_image.startsWith('http') ? selectedShop.id_card_image : `${import.meta.env.VITE_API_URL}${selectedShop.id_card_image.startsWith('/') ? '' : '/'}${selectedShop.id_card_image.replace(/\\/g, '/')}`} alt="ID Card" className="w-full h-auto object-contain max-h-72" />
+                        <a href={getImageUrl(selectedShop.id_card_image)} target="_blank" rel="noopener noreferrer" className="block rounded-lg overflow-hidden border border-slate-200 shadow-sm bg-slate-100 hover:opacity-90 transition-opacity cursor-pointer">
+                          <img src={getImageUrl(selectedShop.id_card_image)} alt="ID Card" className="w-full h-auto object-contain max-h-72" />
                         </a>
                       ) : (
                         <div className="w-full h-48 bg-slate-100 rounded-lg border border-slate-200 flex flex-col items-center justify-center text-slate-400">

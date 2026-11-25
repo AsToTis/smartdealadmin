@@ -4,8 +4,15 @@ import { X, Bike } from 'lucide-react';
 
 const getImageUrl = (path) => {
   if (!path) return null;
-  if (path.startsWith('http')) return path;
-  const normalizedPath = path.replace(/\\/g, '/');
+  let parsedPath = path;
+  try {
+    if (typeof path === 'string' && path.startsWith('[') && path.endsWith(']')) {
+      const arr = JSON.parse(path);
+      if (arr.length > 0) parsedPath = arr[0];
+    }
+  } catch(e) {}
+  if (parsedPath.startsWith('http') || parsedPath.startsWith('data:image')) return parsedPath;
+  const normalizedPath = parsedPath.replace(/\\/g, '/');
   return `${import.meta.env.VITE_API_URL}${normalizedPath.startsWith('/') ? '' : '/'}${normalizedPath}`;
 };
 
@@ -89,7 +96,7 @@ const Riders = () => {
                   <tr key={rider.id || rider.rider_id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-6 py-4 font-medium text-slate-900">#{rider.id || rider.rider_id}</td>
                     <td className="px-6 py-4 text-slate-700">{rider.real_name || rider.first_name || rider.firstName || rider.name} {rider.last_name || rider.lastName || ''}</td>
-                    <td className="px-6 py-4 text-slate-700">{rider.license_plate || rider.licensePlate || '-'}</td>
+                    <td className="px-6 py-4 text-slate-700">{rider.vehicle_plate || rider.license_plate || rider.licensePlate || '-'}</td>
                     <td className="px-6 py-4 text-center text-slate-700">{rider.total_jobs || 0}</td>
                     <td className="px-6 py-4 text-center text-yellow-500 font-medium">{rider.average_rating ? Number(rider.average_rating).toFixed(1) : '-'}</td>
                     <td className="px-6 py-4">
@@ -155,7 +162,7 @@ const Riders = () => {
                         <div><span className="text-slate-500 text-sm">ชื่อ-นามสกุล:</span> <p className="font-medium text-slate-900">{selectedRiderDetails.profile.real_name || selectedRiderDetails.profile.user_full_name || selectedRiderDetails.profile.name || '-'}</p></div>
                         <div><span className="text-slate-500 text-sm">อีเมล:</span> <p className="text-sm font-medium text-slate-900">{selectedRiderDetails.profile.email || '-'}</p></div>
                         <div><span className="text-slate-500 text-sm">เบอร์โทรศัพท์:</span> <p className="font-medium text-slate-900">{selectedRiderDetails.profile.phone || '-'}</p></div>
-                        <div><span className="text-slate-500 text-sm">ทะเบียนรถ:</span> <p className="font-medium text-slate-900">{selectedRiderDetails.profile.license_plate || '-'}</p></div>
+                        <div><span className="text-slate-500 text-sm">ทะเบียนรถ:</span> <p className="font-medium text-slate-900">{selectedRiderDetails.profile.vehicle_plate || selectedRiderDetails.profile.license_plate || '-'}</p></div>
                         <div><span className="text-slate-500 text-sm">สถานะ:</span> 
                           <p className={`font-medium ${selectedRiderDetails.profile.rider_status === 'online' ? 'text-green-600' : 'text-slate-600'}`}>
                             {selectedRiderDetails.profile.rider_status === 'online' ? 'Online' : 'Offline'}
@@ -222,7 +229,7 @@ const Riders = () => {
                                   <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-md mb-1 ${job.status === 'delivered' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
                                     {job.status === 'delivered' ? 'จัดส่งสำเร็จ' : job.status}
                                   </span>
-                                  <p className="text-xs text-slate-400">{new Date(job.created_at).toLocaleString('th-TH')}</p>
+                                  <p className="text-xs text-slate-400">{new Date(job.assigned_at || job.completed_at || new Date()).toLocaleString('th-TH')}</p>
                                 </div>
                               </div>
                             ))}

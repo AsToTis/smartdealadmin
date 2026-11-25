@@ -1,7 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
-  LayoutDashboard, 
+  LayoutDashboard,
+  ShoppingCart, 
   Users, 
   Store, 
   StoreIcon, 
@@ -9,19 +10,25 @@ import {
   Settings,
   Wallet,
   Megaphone,
-  Bike
+  Bike,
+  HelpCircle,
+  Banknote
 } from 'lucide-react';
 
 const Sidebar = () => {
     const navItems = [
     { name: 'ภาพรวม', path: '/', icon: LayoutDashboard },
+    { name: 'คำสั่งซื้อ', path: '/orders', icon: ShoppingCart },
+    
     { name: 'จัดการผู้ใช้', path: '/users', icon: Users },
     { name: 'จัดการร้านค้า', path: '/shops', icon: Store },
     { name: 'จัดการพนักงานส่งของ', path: '/riders', icon: Bike },
     { name: 'อนุมัติพนักงานส่งของ', path: '/rider-approvals', icon: Bike },
     { name: 'อนุมัติร้านใหม่', path: '/approvals', icon: StoreIcon },
     { name: 'คำขอถอนเงิน', path: '/withdrawals', icon: Wallet },
-    { name: 'เรื่องร้องเรียน', path: '/tickets', icon: MessageSquareWarning },
+    { name: 'จัดการเงินคืน', path: '/refunds', icon: Banknote },
+    { name: 'ศูนย์ช่วยเหลือ', path: '/complaints', icon: HelpCircle },
+
     { name: 'จัดการแบนเนอร์', path: '/banners', icon: Megaphone },
     { name: 'ตั้งค่าระบบ', path: '/settings', icon: Settings },
   ];
